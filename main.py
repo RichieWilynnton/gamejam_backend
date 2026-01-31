@@ -207,7 +207,7 @@ def roomStatus(roomId):
                 {
                     "status": "in_game",
                     "playerOneReady": True,
-                    "playerTwoReady": gameRooms[roomId].game.playerTwoInfo.isReady,
+                    "playerTwoReady": True,
                     "playerCount": 2,
                 }
             ),
