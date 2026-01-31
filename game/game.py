@@ -22,6 +22,7 @@ class Game:
         self.handlePlayerInfo(curPlayer, playerInfoData)
 
         self.curTurn += 1
+        return None
 
     def handleBoard(self, boardData):
         for i in range(len(boardData)):
@@ -65,7 +66,7 @@ class Game:
             self.recentMove.append(newAction)
 
     def handlePlayerInfo(self, curPlayer, playerInfoData):
-        if curPlayer == 0:
+        if curPlayer == 1:
             self.playerOneInfo = Player(**playerInfoData)
         else:
             self.playerTwoInfo = Player(**playerInfoData)

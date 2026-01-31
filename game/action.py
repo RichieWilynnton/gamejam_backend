@@ -5,6 +5,10 @@ class Action:
     actionType : str
 
 @dataclass
+class EndTurn(Action):
+    pass
+
+@dataclass
 class Move(Action):
     fromX : int
     fromY : int
