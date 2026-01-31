@@ -125,7 +125,7 @@ def testHandleAction():
             ]
             for _ in range(8)
         ],
-        "action": {"actionType": "move", "fromX": 0, "fromY": 0, "toX": 1, "toY": 1},
+        "action": {"actionType": "endTurn"},
         "playerNum": 1,
         "playerInfo": {"money": 100},
     }

@@ -53,12 +53,15 @@ def createRoom():
     roomId = data.get("roomId", "default")
     
     if roomId in gameRooms or roomId in lobbyRooms:
+        print("Room already exists:", roomId)
         return jsonify({"error": "Room already exists"}), 400
     
     lobbyRooms[roomId] = LobbyRoom(playerCount=1)
+    print(request.json)
+    print("Created lobby room:", roomId)
 
-    # Player 0 is the creator
-    return jsonify({"message": f"Room {roomId} created!", "playerNum": 0}), 201
+    # Player 1 is the creator
+    return jsonify({"message": f"Room {roomId} created!", "playerNum": 1, "roomId": roomId}), 201
 
 """
 Input:
@@ -83,8 +86,8 @@ def joinRoom():
     
     lobbyRoom.playerCount += 1
 
-    # Player 1 is the joiner
-    return jsonify({"message": f"Joined room {roomId}!", "playerNum": 1}), 200
+    # Player 2 is the joiner
+    return jsonify({"message": f"Joined room {roomId}!", "playerNum": 2, "roomId": roomId}), 200
 
 """
 Input:
@@ -125,11 +128,14 @@ def readyUp(roomId):
 def deleteRoom(roomId):
     if roomId in gameRooms:
         del gameRooms[roomId]
+        print("Deleted game room:", roomId)
         return jsonify({"message": f"Room {roomId} deleted!"}), 200
     elif roomId in lobbyRooms:
         del lobbyRooms[roomId]
+        print("Deleted lobby room:", roomId)
         return jsonify({"message": f"Room {roomId} deleted!"}), 200
     else:
+        print("Room not found for deletion:", roomId)
         return jsonify({"error": "Room not found"}), 404
 
 
@@ -145,6 +151,7 @@ input:
 @app.route("/action/<roomId>", methods=["POST"])
 def handleAction(roomId):
     if roomId not in gameRooms:
+        print("Room not found for action:", roomId, "roomIds:", list(gameRooms.keys()))
         return jsonify({"error": "Room not found"}), 404
         
     receivedData = request.json
@@ -154,12 +161,22 @@ def handleAction(roomId):
     if error:
         return jsonify(error), 400
     
-    print(f"Received action for room {roomId}: {receivedData}")
-
     return (
         jsonify({"message": "Move processed!", "yourData": receivedData}),
         201,
     )
+
+@app.route("/room_status/<roomId>")
+def roomStatus(roomId):
+    if roomId in gameRooms:
+        return jsonify({"status": "in_game"}), 200
+    elif roomId in lobbyRooms:
+        lobbyRoom = lobbyRooms[roomId]
+        return jsonify({
+            "status": "in_lobby",
+        }), 200
+    else:
+        return jsonify({"status": "not_found"}), 200
 
 if __name__ == "__main__":
     app.run(debug=True, port=5001)
