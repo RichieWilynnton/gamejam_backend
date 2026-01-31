@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 @dataclass
 class Action:
-    action_type : str
+    actionType : str
 
 @dataclass
 class Move(Action):

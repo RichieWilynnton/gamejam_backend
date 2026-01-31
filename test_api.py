@@ -2,17 +2,17 @@ import requests
 import json
 
 BASE_URL = "http://localhost:5001"
-ROOM_ID = "test_room_123"
+ROOM_ID = "testRoom123"
 
 
-def test_create_room():
+def testCreateRoom():
     """Test creating a new game room"""
     print("\n" + "="*60)
     print("Testing POST /create_room")
     print("="*60)
     
     url = f"{BASE_URL}/create_room"
-    payload = {"room_id": ROOM_ID}
+    payload = {"roomId": ROOM_ID}
     
     try:
         response = requests.post(url, json=payload)
@@ -24,14 +24,14 @@ def test_create_room():
         return False
 
 
-def test_join_room():
+def testJoinRoom():
     """Test joining an existing room"""
     print("\n" + "="*60)
     print("Testing POST /join_room")
     print("="*60)
     
     url = f"{BASE_URL}/join_room"
-    payload = {"room_id": ROOM_ID}
+    payload = {"roomId": ROOM_ID}
     
     try:
         response = requests.post(url, json=payload)
@@ -43,7 +43,7 @@ def test_join_room():
         return False
 
 
-def test_get_state():
+def testGetState():
     """Test getting game state"""
     print("\n" + "="*60)
     print(f"Testing GET /state/{ROOM_ID}")
@@ -61,7 +61,7 @@ def test_get_state():
         return False
 
 
-def test_handle_move():
+def testHandleMove():
     """Test handling a move"""
     print("\n" + "="*60)
     print(f"Testing POST /move/{ROOM_ID}")
@@ -72,21 +72,21 @@ def test_handle_move():
     # Create sample move data matching the expected format
     payload = {
         "board": [
-            [{"troopType": "empty", "owner": 0, "health": 0, "revealed" : False} 
+            [{"troopType": "empty", "owner": 0, "health": 0, "isRevealed" : False} 
              for _ in range(8)] 
             for _ in range(8)
         ],
-        "recent_move": [
+        "recentMove": [
             {
-                "action_type": "move",
+                "actionType": "move",
                 "fromX": 0,
                 "fromY": 0,
                 "toX": 1,
                 "toY": 1
             }
         ],
-        "player_num": 0,
-        "player_info": {
+        "playerNum": 0,
+        "playerInfo": {
             "money": 100
         }
     }
@@ -101,7 +101,7 @@ def test_handle_move():
         return False
 
 
-def test_delete_room():
+def testDeleteRoom():
     """Test deleting the test room"""
     print("\n" + "="*60)
     print(f"Testing POST /delete_room/{ROOM_ID}")
@@ -137,11 +137,11 @@ def main():
     results = []
     
     # Run tests in order
-    results.append(("Create Room", test_create_room()))
-    results.append(("Join Room", test_join_room()))
-    results.append(("Get State", test_get_state()))
-    results.append(("Handle Move", test_handle_move()))
-    results.append(("Delete Room", test_delete_room()))
+    results.append(("Create Room", testCreateRoom()))
+    results.append(("Join Room", testJoinRoom()))
+    results.append(("Get State", testGetState()))
+    results.append(("Handle Move", testHandleMove()))
+    results.append(("Delete Room", testDeleteRoom()))
     
     # Print summary
     print("\n" + "="*60)

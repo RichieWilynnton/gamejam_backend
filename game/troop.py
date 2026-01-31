@@ -3,7 +3,7 @@ from dataclasses import dataclass
 @dataclass
 class Troop:
     troopType : str = "empty"
-    revealed : bool = False
+    isRevealed : bool = False
     owner : int = -1
     health : int = 0
 

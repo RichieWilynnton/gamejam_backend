@@ -7,68 +7,68 @@ from game.player import *
 @dataclass
 class Game:
     board : list[list[Troop]]
-    player_one_info : Player = field(default_factory=Player)
-    player_two_info : Player = field(default_factory=Player)
-    cur_turn : int = 0
-    recent_move : list[Action] = field(default_factory=list)
+    playerOneInfo : Player = field(default_factory=Player)
+    playerTwoInfo : Player = field(default_factory=Player)
+    curTurn : int = 0
+    recentMove : list[Action] = field(default_factory=list)
 
-    def handle_move(self, moveJson):
-        cur_player = moveJson["player_num"]
-        board_data = moveJson["board"]
-        recent_move_data = moveJson["recent_move"]
-        player_info_data = moveJson["player_info"]
-        self.handle_board(board_data)
-        self.handle_recent_move(recent_move_data)
-        self.handle_player_info(cur_player, player_info_data)
+    def handleMove(self, moveJson):
+        curPlayer = moveJson["playerNum"]
+        boardData = moveJson["board"]
+        recentMoveData = moveJson["recentMove"]
+        playerInfoData = moveJson["playerInfo"]
+        self.handleBoard(boardData)
+        self.handleRecentMove(recentMoveData)
+        self.handlePlayerInfo(curPlayer, playerInfoData)
 
-        self.cur_turn += 1
+        self.curTurn += 1
 
-    def handle_board(self, board_data):
-        for i in range(len(board_data)):
-            for j in range(len(board_data[i])):
-                troop_data = board_data[i][j]
+    def handleBoard(self, boardData):
+        for i in range(len(boardData)):
+            for j in range(len(boardData[i])):
+                troopData = boardData[i][j]
 
-                troop_type = troop_data["troopType"]
-                cur_troop = None
-                if troop_type == "empty":
-                    cur_troop = Empty(**troop_data)
-                elif troop_type == "banker":
-                    cur_troop = Banker(**troop_data)
+                troopType = troopData["troopType"]
+                curTroop = None
+                if troopType == "empty":
+                    curTroop = Empty(**troopData)
+                elif troopType == "banker":
+                    curTroop = Banker(**troopData)
 
-                if cur_troop is None:
-                    print("Unknown troop type:", troop_type)
+                if curTroop is None:
+                    print("Unknown troop type:", troopType)
                     continue
 
-                self.board[i][j] = cur_troop
+                self.board[i][j] = curTroop
 
-    def handle_recent_move(self, recent_move_data):
-        for recent_action in recent_move_data:
-            action_type = recent_action.get("action_type")
+    def handleRecentMove(self, recentMoveData):
+        for recentAction in recentMoveData:
+            actionType = recentAction.get("actionType")
 
-            new_action = None 
+            newAction = None 
 
-            if action_type == "move":
-                new_action = Move(**recent_action)
-            elif action_type == "reveal":
-                new_action = Shoot(**recent_action)
-            elif action_type == "spawn":
-                new_action = Spawn(**recent_action)
-            elif action_type == "swap":
-                new_action = Swap(**recent_action)
-            elif action_type == "shoot":
-                new_action = Shoot(**recent_action)
+            if actionType == "move":
+                newAction = Move(**recentAction)
+            elif actionType == "reveal":
+                newAction = Shoot(**recentAction)
+            elif actionType == "spawn":
+                newAction = Spawn(**recentAction)
+            elif actionType == "swap":
+                newAction = Swap(**recentAction)
+            elif actionType == "shoot":
+                newAction = Shoot(**recentAction)
 
-            if new_action is None:
-                print("Unknown action type:", action_type)
+            if newAction is None:
+                print("Unknown action type:", actionType)
                 continue
             
-            self.recent_move.append(new_action)
+            self.recentMove.append(newAction)
 
-    def handle_player_info(self, cur_player, player_info_data):
-        if cur_player == 0:
-            self.player_one_info = Player(**player_info_data)
+    def handlePlayerInfo(self, curPlayer, playerInfoData):
+        if curPlayer == 0:
+            self.playerOneInfo = Player(**playerInfoData)
         else:
-            self.player_two_info = Player(**player_info_data)
+            self.playerTwoInfo = Player(**playerInfoData)
 
 
 

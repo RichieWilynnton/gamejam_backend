@@ -6,59 +6,59 @@ app = Flask(__name__)
 
 rooms = {}
 
-board_rows = 8
-board_cols = 8
+boardRows = 8
+boardCols = 8
 
 """
 json format:
 {
     "board" : [TroopInfo(...) for _ in range(boardRows) for _ in range(boardCols)],
-    "recent_move": [Action(), Action()]
-    "player_one_info" : {...},
-    "player_two_info" : {
+    "recentMove": [Action(), Action()]
+    "playerOneInfo" : {...},
+    "playerTwoInfo" : {
         "money" : int
     },
-    "cur_turn" : int,
+    "curTurn" : int,
 }
 """
-@app.route("/state/<room_id>")
-def get_state(room_id):
-    if room_id not in rooms:
+@app.route("/state/<roomId>")
+def getState(roomId):
+    if roomId not in rooms:
         return jsonify({"error": "Room not found"}), 404
     
-    state = rooms[room_id]
+    state = rooms[roomId]
     return jsonify(state), 200
 
 
 @app.route("/create_room", methods=["POST"])
-def create_room():
+def createRoom():
     data = request.json or {}
-    room_id = data.get("room_id", "default")
+    roomId = data.get("roomId", "default")
     
-    if room_id in rooms:
+    if roomId in rooms:
         return jsonify({"error": "Room already exists"}), 400
     
-    board = [[Troop() for _ in range(board_cols)] for _ in range(board_rows)]
-    rooms[room_id] = Game(board)
-    return jsonify({"message": f"Room {room_id} created!", "player_num": 0}), 201
+    board = [[Troop() for _ in range(boardCols)] for _ in range(boardRows)]
+    rooms[roomId] = Game(board)
+    return jsonify({"message": f"Room {roomId} created!", "playerNum": 0}), 201
 
 
 @app.route("/join_room", methods=["POST"])
-def join_room():
+def joinRoom():
     data = request.json or {}
-    room_id = data.get("room_id", "default")
+    roomId = data.get("roomId", "default")
     
-    if room_id not in rooms:
+    if roomId not in rooms:
         return jsonify({"error": "Room not found"}), 404
     
     # Logic to ensure only two players join could go here
-    return jsonify({"message": f"Joined room {room_id}!", "player_num": 1}), 200
+    return jsonify({"message": f"Joined room {roomId}!", "playerNum": 1}), 200
 
-@app.route("/delete_room/<room_id>", methods=["POST"])
-def delete_room(room_id):
-    if room_id in rooms:
-        del rooms[room_id]
-        return jsonify({"message": f"Room {room_id} deleted!"}), 200
+@app.route("/delete_room/<roomId>", methods=["POST"])
+def deleteRoom(roomId):
+    if roomId in rooms:
+        del rooms[roomId]
+        return jsonify({"message": f"Room {roomId} deleted!"}), 200
     else:
         return jsonify({"error": "Room not found"}), 404
 
@@ -68,24 +68,24 @@ input:
 {
     "board" : [TroopInfo(...) for _ in range(boardRows) for _ in range(boardCols)],
     "move" : [Action()]
-    "player_num" : int
-    "player_info" : {...}
+    "playerNum" : int
+    "playerInfo" : {...}
 }
 """
-@app.route("/move/<room_id>", methods=["POST"])
-def handle_move(room_id):
-    if room_id not in rooms:
+@app.route("/move/<roomId>", methods=["POST"])
+def handleMove(roomId):
+    if roomId not in rooms:
         return jsonify({"error": "Room not found"}), 404
         
-    received_data = request.json
-    game = rooms[room_id]
+    receivedData = request.json
+    game = rooms[roomId]
 
-    game.handle_move(received_data)
+    game.handleMove(receivedData)
     
-    print(f"Received move for room {room_id}: {received_data}")
+    print(f"Received move for room {roomId}: {receivedData}")
 
     return (
-        jsonify({"message": "Move processed!", "your_data": received_data}),
+        jsonify({"message": "Move processed!", "yourData": receivedData}),
         201,
     )
 
