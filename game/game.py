@@ -61,7 +61,7 @@ class Game:
         if actionType == "move":
             newAction = Move(**recentActionData)
         elif actionType == "reveal":
-            newAction = Shoot(**recentActionData)
+            newAction = Reveal(**recentActionData)
         elif actionType == "spawn":
             newAction = Spawn(**recentActionData)
         elif actionType == "swap":
