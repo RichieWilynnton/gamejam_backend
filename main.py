@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from game.game import Game
 from game.troop import *
+import uuid
 
 app = Flask(__name__)
 
@@ -34,14 +35,13 @@ output:
 """
 @app.route("/state/<roomId>")
 def getState(roomId):
-    print("Fetching state for room:", roomId)
-    print("Current game rooms:", list(gameRooms.keys()))
+    # print("Fetching state for room:", roomId)
+    # print("Current game rooms:", list(gameRooms.keys()))
     if roomId not in gameRooms:
         print("Game Room not found:", roomId)
         return jsonify({"error": "Game Room not found"}), 404
     
     state = gameRooms[roomId].game
-    print(state)
     return jsonify(state), 200
 
 """
@@ -52,15 +52,12 @@ Input:
 """
 @app.route("/create_room", methods=["POST"])
 def createRoom():
-    data = request.json or {}
-    roomId = data.get("roomId", "default")
-    
-    if roomId in gameRooms or roomId in lobbyRooms:
-        print("Room already exists:", roomId)
-        return jsonify({"error": "Room already exists"}), 400
+    # generate unique roomId    
+    roomId = str(uuid.uuid4().int)[:6]
+    while roomId in gameRooms or roomId in lobbyRooms:
+        roomId = str(uuid.uuid4().int)[:6]
     
     lobbyRooms[roomId] = LobbyRoom(playerCount=1)
-    print(request.json)
     print("Created lobby room:", roomId)
 
     # Player 1 is the creator
