@@ -36,6 +36,16 @@ class Game:
                     curTroop = Empty(**troopData)
                 elif troopType == "banker":
                     curTroop = Banker(**troopData)
+                elif troopType == "king":
+                    curTroop = King(**troopData)
+                elif troopType == "guard":
+                    curTroop = Guard(**troopData)
+                elif troopType == "assassin":
+                    curTroop = Assassin(**troopData)
+                elif troopType == "spy":
+                    curTroop = Spy(**troopData)
+                elif troopType == "archer":
+                    curTroop = Archer(**troopData)
 
                 if curTroop is None:
                     print("Unknown troop type:", troopType)
