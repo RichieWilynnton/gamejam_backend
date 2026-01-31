@@ -15,6 +15,7 @@ class Game:
     actionLog: list[ActionLog] = field(default_factory=list)
 
     def handleAction(self, moveJson):
+        print("Handling action:", moveJson)
         curPlayer = moveJson["playerNum"]
         boardData = moveJson["board"]
         recentActionData = moveJson["action"]

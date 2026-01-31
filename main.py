@@ -34,12 +34,15 @@ output:
 """
 @app.route("/state/<roomId>")
 def getState(roomId):
+    print("Fetching state for room:", roomId)
+    print("Current game rooms:", list(gameRooms.keys()))
     if roomId not in gameRooms:
+        print("Game Room not found:", roomId)
         return jsonify({"error": "Game Room not found"}), 404
     
     state = gameRooms[roomId].game
+    print(state)
     return jsonify(state), 200
-
 
 """
 Input: 
