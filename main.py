@@ -141,6 +141,12 @@ def readyUp(roomId):
     if lobbyRoom.isPlayerOneReady and lobbyRoom.isPlayerTwoReady:
         del lobbyRooms[roomId]
         initialBoard = [[Empty() for _ in range(boardCols)] for _ in range(boardRows)]
+
+        ## init
+        initialBoard[7][3] = King(owner=1, isRevealed=True, health=3)
+        initialBoard[0][3] = King(owner=2, isRevealed=True, health=3)
+
+
         newGame = Game(board=initialBoard)
         gameRooms[roomId] = GameRoom(game=newGame)
 
