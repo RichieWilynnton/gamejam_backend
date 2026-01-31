@@ -137,24 +137,24 @@ def deleteRoom(roomId):
 input:
 {
     "board" : [TroopInfo(...) for _ in range(boardRows) for _ in range(boardCols)],
-    "move" : [Action()]
+    "action" : [Action()]
     "playerNum" : int
     "playerInfo" : {...}
 }
 """
-@app.route("/move/<roomId>", methods=["POST"])
-def handleMove(roomId):
+@app.route("/action/<roomId>", methods=["POST"])
+def handleAction(roomId):
     if roomId not in gameRooms:
         return jsonify({"error": "Room not found"}), 404
         
     receivedData = request.json
     gameRoom = gameRooms[roomId]
 
-    error = gameRoom.game.handleMove(receivedData)
+    error = gameRoom.game.handleAction(receivedData)
     if error:
         return jsonify(error), 400
     
-    print(f"Received move for room {roomId}: {receivedData}")
+    print(f"Received action for room {roomId}: {receivedData}")
 
     return (
         jsonify({"message": "Move processed!", "yourData": receivedData}),

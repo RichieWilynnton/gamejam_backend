@@ -2,26 +2,27 @@ from dataclasses import dataclass, field
 
 from game.troop import *
 from game.action import *
+from game.log import *
 from game.player import *
+
 
 @dataclass
 class Game:
-    board : list[list[Troop]]
-    playerOneInfo : Player = field(default_factory=Player)
-    playerTwoInfo : Player = field(default_factory=Player)
-    curTurn : int = 0
-    recentMove : list[Action] = field(default_factory=list)
+    board: list[list[Troop]]
+    playerOneInfo: Player = field(default_factory=Player)
+    playerTwoInfo: Player = field(default_factory=Player)
+    curTurn: int = 0
+    actionLog: list[ActionLog] = field(default_factory=list)
 
-    def handleMove(self, moveJson):
+    def handleAction(self, moveJson):
         curPlayer = moveJson["playerNum"]
         boardData = moveJson["board"]
-        recentMoveData = moveJson["recentMove"]
+        recentActionData = moveJson["action"]
         playerInfoData = moveJson["playerInfo"]
         self.handleBoard(boardData)
-        self.handleRecentMove(recentMoveData)
+        self.handleRecentAction(recentActionData, curPlayer)
         self.handlePlayerInfo(curPlayer, playerInfoData)
 
-        self.curTurn += 1
         return None
 
     def handleBoard(self, boardData):
@@ -42,34 +43,33 @@ class Game:
 
                 self.board[i][j] = curTroop
 
-    def handleRecentMove(self, recentMoveData):
-        for recentAction in recentMoveData:
-            actionType = recentAction.get("actionType")
+    def handleRecentAction(self, recentActionData, curPlayer):
+        actionType = recentActionData.get("actionType")
 
-            newAction = None 
+        newAction = None
 
-            if actionType == "move":
-                newAction = Move(**recentAction)
-            elif actionType == "reveal":
-                newAction = Shoot(**recentAction)
-            elif actionType == "spawn":
-                newAction = Spawn(**recentAction)
-            elif actionType == "swap":
-                newAction = Swap(**recentAction)
-            elif actionType == "shoot":
-                newAction = Shoot(**recentAction)
+        if actionType == "move":
+            newAction = Move(**recentActionData)
+        elif actionType == "reveal":
+            newAction = Shoot(**recentActionData)
+        elif actionType == "spawn":
+            newAction = Spawn(**recentActionData)
+        elif actionType == "swap":
+            newAction = Swap(**recentActionData)
+        elif actionType == "shoot":
+            newAction = Shoot(**recentActionData)
+        elif actionType == "endTurn":
+            newAction = EndTurn(**recentActionData)
+            self.curTurn += 1
 
-            if newAction is None:
-                print("Unknown action type:", actionType)
-                continue
-            
-            self.recentMove.append(newAction)
+        if newAction is None:
+            print("Unknown action type:", actionType)
+            return
+
+        self.actionLog.append(ActionLog(action=newAction, executor=curPlayer))
 
     def handlePlayerInfo(self, curPlayer, playerInfoData):
         if curPlayer == 1:
             self.playerOneInfo = Player(**playerInfoData)
         else:
             self.playerTwoInfo = Player(**playerInfoData)
-
-
-
