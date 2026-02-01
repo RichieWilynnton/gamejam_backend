@@ -8,7 +8,6 @@ class Troop:
     owner: int = -1
     health: int = 0
 
-
 @dataclass
 class Empty(Troop):
     pass
